@@ -10,12 +10,26 @@
             "group": "build"            
         },
         {
-            "label": "run os",
+            "label": "copy mbr",
             "type": "shell",
-            "command": "qemu-system-x86_64 -drive file=${workspaceFolder}/build/mbr.bin,index=0,media=disk,format=raw",
-            "group": "build",
+            "group": "build",            
+            "windows":{
+                "command": "dd bs=1c if=${workspaceFolder}/build/mbr.bin of=${workspaceFolder}/build/hdwin.img count=446"
+            },
+            "linux":{
+                "command": "dd if=${workspaceFolder}/build/mbr.bin of=${workspaceFolder}/build/hdlinux.img count=446 conv=notrunc iflag=count_bytes"
+            },
             "dependsOn":[
                 "build mbr"
+            ]
+        },
+        {
+            "label": "run os",
+            "type": "shell",
+            "command": "qemu-system-x86_64 -drive file=${workspaceFolder}/build/hdwin.img,index=0,media=disk,format=raw",
+            "group": "build",
+            "dependsOn":[
+                "copy mbr"
             ]
         }
         
