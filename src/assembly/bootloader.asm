@@ -1,0 +1,7 @@
+[ORG 0x500]
+mov ax, 0x4F02
+mov bx, 0x0115
+int 0x10
+
+hang:
+    jmp hang

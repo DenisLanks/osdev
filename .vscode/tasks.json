@@ -10,6 +10,12 @@
             "group": "build"            
         },
         {
+            "label": "build bootloader",
+            "type": "shell",
+            "command": "nasm -f bin ${workspaceFolder}/src/assembly/bootloader.asm -o ${workspaceFolder}/build/bootloader.bin",
+            "group": "build"            
+        },
+        {
             "label": "copy mbr",
             "type": "shell",
             "group": "build",            
@@ -24,12 +30,27 @@
             ]
         },
         {
+            "label": "copy bootloader",
+            "type": "shell",
+            "group": "build",            
+            "windows":{
+                "command": "dd bs=1c if=${workspaceFolder}/build/bootloader.bin of=${workspaceFolder}/build/hdwin.img count=446 seek=512"
+            },
+            "linux":{
+                "command": "dd if=${workspaceFolder}/build/mbr.bin of=${workspaceFolder}/build/hdlinux.img count=446 conv=notrunc iflag=count_bytes seek=1"
+            },
+            "dependsOn":[
+                "build bootloader",
+                "copy mbr"
+            ]
+        },
+        {
             "label": "run os",
             "type": "shell",
             "command": "qemu-system-x86_64 -drive file=${workspaceFolder}/build/hdwin.img,index=0,media=disk,format=raw",
             "group": "build",
             "dependsOn":[
-                "copy mbr"
+                "copy bootloader"
             ]
         }
         
