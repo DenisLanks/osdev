@@ -1,0 +1,1 @@
+%define BOOTADD 0x500
