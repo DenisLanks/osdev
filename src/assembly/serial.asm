@@ -39,4 +39,17 @@ initSerial:
     out dx, al
 
     pop bp
-    ret
+    ret 2
+
+writeSerialB:
+    push bp
+    mov bp, sp
+    mov bx, [bp + 4] ;Serial Port
+
+    mov dx, bx
+    mov bx, [bp +6 ]; Character to Write
+    mov ax, bx
+    out dx, al
+
+    pop bp
+    ret 4
