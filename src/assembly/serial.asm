@@ -47,9 +47,26 @@ writeSerialB:
     mov bx, [bp + 4] ;Serial Port
 
     mov dx, bx
-    mov bx, [bp +6 ]; Character to Write
+    mov bx, [bp + 6]; Character to Write
     mov ax, bx
     out dx, al
 
+    pop bp
+    ret 4
+
+writeSerialSB:
+    push bp
+    mov bp, sp
+    mov si, [bp + 6]; String Pointer
+    .loopchar:
+    lodsb
+    cmp al, 0
+    je .end
+
+    push ax
+    push word [bp + 4] ;Serial Port
+    call writeSerialB
+    jmp .loopchar
+    .end:
     pop bp
     ret 4

@@ -8,11 +8,12 @@ int 0x10
 push word 0x3F8
 call initSerial
 
-push word "Y"
+push word msg
 push word 0x3F8
-call writeSerialB
+call writeSerialSB
 
 hang:
     jmp hang
 
 %include "src/assembly/serial.asm"
+msg: db "Hello from Bootloader",0
