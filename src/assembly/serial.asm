@@ -44,6 +44,7 @@ initSerial:
 writeSerialB:
     push bp
     mov bp, sp
+    pusha
     mov bx, [bp + 4] ;Serial Port
 
     mov dx, bx
@@ -51,6 +52,7 @@ writeSerialB:
     mov ax, bx
     out dx, al
 
+    popa
     pop bp
     ret 4
 
