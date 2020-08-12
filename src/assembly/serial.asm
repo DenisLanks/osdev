@@ -59,6 +59,7 @@ writeSerialB:
 writeSerialSB:
     push bp
     mov bp, sp
+    pusha
     mov si, [bp + 6]; String Pointer
     .loopchar:
     lodsb
@@ -70,5 +71,6 @@ writeSerialSB:
     call writeSerialB
     jmp .loopchar
     .end:
+    popa
     pop bp
     ret 4
