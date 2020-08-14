@@ -1,15 +1,5 @@
 %include "src/assembly/settings.asm"
 [ORG 0x7C00]
-; mov ah, 02
-; mov al, 01
-; ;CX := ( ( cylinder and 255 ) shl 8 ) or ( ( cylinder and 768 ) shr 2 ) or sector;
-; xor cx, cx
-; or cx, 02
-; mov dh, 0
-; mov bx, 0x500
-; mov es, bx
-; xor bx, bx
-
 mov ah, 42h
 xor bx, bx
 mov ds, bx

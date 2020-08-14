@@ -39,13 +39,7 @@ sub di, 6
 push di
 push word outstr
 call strcpy
-; push di
-; push word 0x3f8
-; call writeSerialSB
 
-; push dx
-; push word 0x3f8
-; call writeSerialB
 add sp, 8
 pop bp
 ret 4

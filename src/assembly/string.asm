@@ -1,9 +1,11 @@
+%define source [bp + 6]
+%define destination [bp + 4]
 strcpy:
     push bp
     mov bp, sp
     pusha
-    mov si, [bp + 6]
-    mov di, [bp + 4]
+    mov si, source
+    mov di, destination
     .cpyloop:
         lodsb
         cmp al, 0

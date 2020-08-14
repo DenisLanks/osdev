@@ -1,7 +1,12 @@
+;Serial port parameter
+%define sport [bp + 4]
+%define char [bp + 6]
+%define strptr [bp + 6]
+
 initSerial:
     push bp
     mov bp, sp
-    mov bx, [bp + 4]
+    mov bx, sport
 
     ;Disable all interrupts
     mov dx, bx
@@ -45,10 +50,10 @@ writeSerialB:
     push bp
     mov bp, sp
     pusha
-    mov bx, [bp + 4] ;Serial Port
+    mov bx, sport ;Serial Port
 
     mov dx, bx
-    mov bx, [bp + 6]; Character to Write
+    mov bx, char; Character to Write
     mov ax, bx
     out dx, al
 
@@ -60,14 +65,14 @@ writeSerialSB:
     push bp
     mov bp, sp
     pusha
-    mov si, [bp + 6]; String Pointer
+    mov si, strptr; String Pointer
     .loopchar:
     lodsb
     cmp al, 0
     je .end
 
     push ax
-    push word [bp + 4] ;Serial Port
+    push word sport ;Serial Port
     call writeSerialB
     jmp .loopchar
     .end:
