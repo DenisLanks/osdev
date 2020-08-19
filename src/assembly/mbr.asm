@@ -14,7 +14,7 @@ hang:
 DAP:
     .size: db 10h
     .reserved: db 0
-    .sectors: dw 1
+    .sectors: dw 2
     .segment: dw BOOTADD
     .offset: dw 0
     .lba: dq 1

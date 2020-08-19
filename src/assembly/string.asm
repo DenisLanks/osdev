@@ -1,3 +1,5 @@
+%define LF 0Ah
+%define CR 0Dh
 %define source [bp + 6]
 %define destination [bp + 4]
 strcpy:

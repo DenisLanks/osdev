@@ -34,10 +34,10 @@
             "type": "shell",
             "group": "build",            
             "windows":{
-                "command": "dd bs=1c if=${workspaceFolder}/build/bootloader.bin of=${workspaceFolder}/build/hdwin.img count=446 seek=512"
+                "command": "dd bs=1c if=${workspaceFolder}/build/bootloader.bin of=${workspaceFolder}/build/hdwin.img seek=512"
             },
             "linux":{
-                "command": "dd if=${workspaceFolder}/build/bootloader.bin of=${workspaceFolder}/build/hdlinux.img count=446 conv=notrunc iflag=count_bytes seek=1"
+                "command": "dd if=${workspaceFolder}/build/bootloader.bin of=${workspaceFolder}/build/hdlinux.img conv=notrunc iflag=count_bytes seek=1"
             },
             "dependsOn":[
                 "build bootloader",
