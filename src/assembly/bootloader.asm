@@ -39,6 +39,11 @@ mov dh, 24
 mov dl, 22
 int 10h
 
+push word 32768
+push word COM1
+call dumpDec
+
+
 hang:
     mov ax, 1
     int 16h
@@ -54,9 +59,6 @@ hang:
 %include "src/assembly/string.asm"
 %include "src/assembly/stdlib.asm"
 %include "src/assembly/stdio.asm"
-msg: db "Hello from Bootloader!",LF,CR,0
-title: db "Lanks Bootloader",0
-headerPart: db "Opcao Num Disco Num Part. Tipo Tamanho",0
-headerLine: db "_____ ___ _____ _________ ____ _______",0
-msgInfo: db ">",0
+%include "src/assembly/data.asm"
+
 

@@ -2,6 +2,8 @@
 %define sport [bp + 4]
 %define char [bp + 6]
 %define strptr [bp + 6]
+%define num [bp + 6]
+%define tmp [bp - 8]
 
 initSerial:
     push bp
@@ -77,5 +79,75 @@ writeSerialSB:
     jmp .loopchar
     .end:
     popa
+    pop bp
+    ret 4
+
+dumpHex:
+    push bp
+    mov bp, sp
+    pusha
+    
+    mov ax, num
+    mov cx, 4
+    mov si, hexstr
+
+    .hexloop:
+    rol ax, 4
+    mov bx, ax
+    and bx, 0x0F
+    mov bl, [si + bx]
+    
+    push bx
+    push word sport ;Serial Port
+    call writeSerialB
+
+    dec cx
+    jnz .hexloop
+
+    popa
+    pop bp
+    ret 4
+
+dumpDec:
+    push bp
+    mov bp, sp
+    push word 0
+    push word '00'
+    push word '00'
+    push word 0
+    pusha
+
+    mov es, [bp - 2]
+    mov di, bp
+    sub di, 2
+    std
+    mov ax, num
+    .decloop:
+        cwd
+        mov bx, 10
+        div bx
+
+        mov tmp, ax
+        add dx, 48
+        mov ax, dx
+        stosb
+
+        mov ax, tmp
+        cmp ax, 10
+        jge .decloop
+        
+        add ax, 48
+        stosb
+        cld
+    
+    mov di, bp
+    sub di, 6
+
+    push di
+    push word COM1
+    call writeSerialSB
+
+    popa
+    add sp, 8
     pop bp
     ret 4
