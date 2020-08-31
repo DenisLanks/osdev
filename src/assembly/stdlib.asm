@@ -9,6 +9,7 @@ push word 0
 push word '00'
 push word '00'
 push word 0
+pusha
 
 mov di, bp
 sub di, 2
@@ -33,13 +34,13 @@ mov ax, num
     stosb
     cld
 
-mov di, bp
-sub di, 6
+inc di
 
 push di
 push word outstr
 call strcpy
 
+popa
 add sp, 8
 pop bp
 ret 4

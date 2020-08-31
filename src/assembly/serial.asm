@@ -140,11 +140,11 @@ dumpDec:
         stosb
         cld
     
-    mov di, bp
-    sub di, 6
+    ; mov di, bp
+    inc di
 
     push di
-    push word COM1
+    push word sport
     call writeSerialSB
 
     popa

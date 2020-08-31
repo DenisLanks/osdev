@@ -6,6 +6,8 @@ strcpy:
     push bp
     mov bp, sp
     pusha
+    xor ax, ax
+    mov es, ax
     mov si, source
     mov di, destination
     .cpyloop:
