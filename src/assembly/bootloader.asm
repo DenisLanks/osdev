@@ -56,33 +56,17 @@ setup:
     ret
 
 readDiskCount:
-    call printDisk
+    xor ax, ax
+    mov al, NUMHD
+
+    push ax
+    push word COM1
+    call dumpDec
+
+    
     ret
 
 printDisk:
-    push bp
-    mov bp, sp 
-    push word 0
-    push word 0
-    push word 0
-
-    xor ax, ax
-    mov al, NUMHD
-    mov bx, 6
-    xor cx, cx
-
-   .diskloop:
-        mov dx, 0x80
-        add dx, cx
-        push dx
-        
-         
-
-   jmp diskloop 
-   
-   .out:
-    add sp, 6
-    pop bp
     ret
 
 printPart:
