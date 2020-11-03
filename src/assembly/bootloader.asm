@@ -90,11 +90,14 @@ printDisk:
     ret
 
 printDiskData:
+    %define line [bp + 8]
+    %define option [bp + 6]
     push bp
     mov bp, sp
-    sub sp, 512
+    sub sp, 512 ;reserve sector space
     pusha
     
+    ;load first sector
     mov ah, 02
     mov al, 01
     mov cx, 1
@@ -106,35 +109,50 @@ printDiskData:
     sub di, 512
     mov bx, di
     int 13h
+    ;offset to first partition entry
+    add di, 446
+    mov bx, di
 
-    add di, 510
-    push word [di]
-    push word COM1
-    call dumpHex
+    ; push word es
+    ; push word COM1
+    ; call dumpHex
 
-    mov cx, 4
+    ; push word [bx]
+    ; push word COM1
+    ; call dumpHex
+
+    mov cx, 4 ;loop counter
     .partLoop:
         cmp cx, 0
         je .end
 
-        mov di, word [bp + 8]        
-        push word [di]
-        mov di, word [bp + 6]        
-        push word [di]
-        push word 0
-        call printPart
-        
+        add di, 4
+        mov al, [di]
+        cmp al, 0
+        je .nextrec
         
         ; push word cx
         ; push word COM1
         ; call dumpDec
 
-        mov di, word [bp + 8]
-        add [di], word 1
-        mov di, word [bp + 6]
-        add [di], word 1
-        dec cx
-        jmp .partLoop
+        mov si, word line        
+        push word [si]
+        mov si, word option        
+        push word [si]
+        push word bx
+        call printPart
+        
+        
+
+        mov si, word line
+        add [si], word 1
+        mov si, word option
+        add [si], word 1
+        .nextrec:
+            dec cx
+            add bx, 16
+            mov di, bx
+            jmp .partLoop
 
     .end:
     popa
@@ -143,19 +161,79 @@ printDiskData:
     ret 6
 ; partentry ptr, option, line
 printPart:
+    %define option [bp + 6]
     push bp
     mov bp, sp
-    
+    pusha
+    mov si, [bp + 4]
+    add si, 4
+
     push word [bp + 8]
     push word 21
     push word 0Fh
-    push word headerLine
-    call printsAt
+    push word option
+    call printDecAt
+
+    ; xor ax, ax
+    ; mov al, [si]
+    ; push word ax
+    ; push word COM1
+    ; call dumpHex
+
+    xor ax, ax
+    mov al, [si]
+    push word [bp + 8]
+    push word 47
+    push word 0Fh
+    push ax
+    call printDecAt
     
     .end:
+        popa
         pop bp
         ret 6
 
+printDecAt:
+    %define num [bp + 4]
+    %define color [bp + 6]
+    %define col [bp + 8]
+    %define row [bp + 10]
+    push bp
+    mov bp, sp
+    push word 0
+    push word 0
+    push word 0
+    pusha
+    push es
+
+    ; push word col
+    ; push word COM1
+    ; call dumpDec
+
+    mov di, bp
+    sub di, 6
+    push di
+    push word num
+    call itoa
+
+    ; mov di, sp
+    ; push word di
+    ; push word COM1
+    ; call writeSerialSB
+
+    mov di, bp
+    sub di, 6
+    push word row
+    push word col
+    push word color
+    push di
+    call printsAt
+
+    pop es
+    popa
+    add sp, 6
+    pop bp
+    ret 8
 %include "src/assembly/serial.asm"
 %include "src/assembly/string.asm"
 %include "src/assembly/stdlib.asm"
