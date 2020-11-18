@@ -136,10 +136,10 @@ printDiskData:
         ; call dumpDec
 
         mov si, word line        
-        push word [si]
+        push word [si]; line
         mov si, word option        
-        push word [si]
-        push word bx
+        push word [si] ;option
+        push word bx ;partition entry pointer
         call printPart
         
         
@@ -182,11 +182,44 @@ printPart:
 
     xor ax, ax
     mov al, [si]
+    ;switch case partition type
+    ;case 0x0C
+    cmp al, 0x0C
+    je .printfat32
+
+    ;case 0x11
+    cmp al, 0x0E
+    je .printfat16
+
+    ;default
     push word [bp + 8]
     push word 47
     push word 0Fh
-    push ax
-    call printDecAt
+    push word unknownpart
+    call printsAt
+    jmp .end
+
+    .printfat32:
+        push word [bp + 8]
+        push word 47
+        push word 0Fh
+        push word fat32part
+        call printsAt
+        jmp .end
+
+    .printfat16:
+        push word [bp + 8]
+        push word 47
+        push word 0Fh
+        push word fat16part
+        call printsAt
+        jmp .end
+    
+    ; push word [bp + 8]
+    ; push word 47
+    ; push word 0Fh
+    ; push ax
+    ; call printDecAt
     
     .end:
         popa

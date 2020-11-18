@@ -27,6 +27,7 @@ printsAt:
     push bp
     mov bp, sp
     pusha
+    push es
     mov bx, videomem
     mov es, bx
     
@@ -46,6 +47,7 @@ printsAt:
         stosw
         jmp .charloop
     .end:
+    pop es
     popa
     pop bp
     ret 8
