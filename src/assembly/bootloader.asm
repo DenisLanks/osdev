@@ -92,6 +92,7 @@ printDisk:
 printDiskData:
     %define line [bp + 8]
     %define option [bp + 6]
+    %define numdsk [bp + 4]
     push bp
     mov bp, sp
     sub sp, 512 ;reserve sector space
@@ -121,9 +122,11 @@ printDiskData:
     ; push word COM1
     ; call dumpHex
 
-    mov cx, 4 ;loop counter
+    xor cx, cx ;loop counter
+    mov dx, word numdsk
+    sub dx, 128
     .partLoop:
-        cmp cx, 0
+        cmp cx, 4
         je .end
 
         add di, 4
@@ -134,7 +137,8 @@ printDiskData:
         ; push word cx
         ; push word COM1
         ; call dumpDec
-
+        push dx
+        push cx
         mov si, word line        
         push word [si]; line
         mov si, word option        
@@ -149,7 +153,7 @@ printDiskData:
         mov si, word option
         add [si], word 1
         .nextrec:
-            dec cx
+            inc cx
             add bx, 16
             mov di, bx
             jmp .partLoop
@@ -159,14 +163,28 @@ printDiskData:
     add sp, 512
     pop bp
     ret 6
-; partentry ptr, option, line
+; partentry ptr, option, line, numpart, numdisk
 printPart:
     %define option [bp + 6]
+    %define numpart [bp + 10]
+    %define numdisk [bp + 12]
     push bp
     mov bp, sp
     pusha
     mov si, [bp + 4]
     add si, 4
+
+    push word [bp + 8]
+    push word 27
+    push word 0Fh
+    push word numdisk
+    call printDecAt
+
+    push word [bp + 8]
+    push word 37
+    push word 0Fh
+    push word numpart
+    call printDecAt
 
     push word [bp + 8]
     push word 21
@@ -224,7 +242,7 @@ printPart:
     .end:
         popa
         pop bp
-        ret 6
+        ret 10
 
 printDecAt:
     %define num [bp + 4]
